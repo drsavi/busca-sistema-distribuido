@@ -2,9 +2,15 @@
 
 Este é um projeto de busca distribuída utilizando Flask e MongoDB. O objetivo é permitir a busca de registros em um conjunto de servidores, onde cada servidor instanciado possui seu próprio banco de dados MongoDB. Os servidores são conectados em uma topologia de vizinhança, realizando uma busca em largura, permitindo que a busca seja encaminhada aos vizinhos em caso de não encontrar o registro localmente.
 
-## Configuração
+## Pré-requisitos
 
-Certifique-se de ter o Python 3.x instalado no seu sistema. Em seguida, instale as dependências do projeto:
+```sh
+    Python 3.x
+    MongoDB
+```
+
+## Configuração do Projeto
+Em seguida, instale as dependências do projeto:
 
 ```sh
     python -m pip install flask
@@ -12,16 +18,46 @@ Certifique-se de ter o Python 3.x instalado no seu sistema. Em seguida, instale 
     python -m pip install requests
 ```
 
+Certifique-se de ter um servidor MongoDB rodando na sua máquina
 
+## Configuração do MongoDB
+1. Instale o MongoDB em sua máquina de acordo com as instruções específicas para o seu sistema operacional. Você pode encontrar mais informações em: 
+[MongoDB - Documentação Oficial](https://www.mongodb.com/docs/manual/installation/)
+
+2. Inicie o servidor MongoDB localmente.
+
+3. Crie quatro bancos de dados no MongoDB chamados: 
+```sh
+    airbnb10
+    airbnb11
+    airbnb12
+    airbnb13
+```
+4. Crie uma coleção chamada listingsAndReviews em cada um dos bancos de dados recém-criados.
+
+5. Inserir registros em cada coleção listingsAndReviews. Segue abaixo o link de uma base de dados de registros do Airbnb: 
+
+[Airbnb - Registros](https://github.com/neelabalan/mongodb-sample-dataset/blob/main/sample_airbnb/listingsAndReviews.json)
 
 ## Uso
+
 1. Clone o repositório para sua máquina local:
-
-
-
-1. Execute os arquivos `server.py` para iniciar a API Flask.
 ```sh
-python server.py
+    https://github.com/drsavi/busca-sistema-distribuido
+```
+
+2. Navegue até o diretório do projeto:
+```sh
+    cd busca-sistema-distribuido
+```
+
+2. Execute os arquivos `server.py` para iniciar a API Flask.
+
+```sh
+python server10.py
+python server11.py
+python server12.py
+python server13.py
 ```
 
 ## API
@@ -34,68 +70,23 @@ Substitua <id> pelo ID desejado e <neighbor_id> pelo ID do vizinho para obter as
 
 Exemplo de uso:
 
-#### http://localhost:8000/get_data?_id=<id>&neighbor_id=<neighbor_id>
-#### http://localhost:8001/get_data?_id=<id>&neighbor_id=<neighbor_id>
-#### http://localhost:8002/get_data?_id=<id>&neighbor_id=<neighbor_id>
-#### http://localhost:8003/get_data?_id=<id>&neighbor_id=<neighbor_id>
+
+```sh
+http://localhost:8000/get_data?_id=<id>&neighbor_id=<neighbor_id>
+http://localhost:8001/get_data?_id=<id>&neighbor_id=<neighbor_id>
+http://localhost:8002/get_data?_id=<id>&neighbor_id=<neighbor_id>
+http://localhost:8003/get_data?_id=<id>&neighbor_id=<neighbor_id>
+
+http://localhost:8000/get_data?_id=11945972&neighbor_id=10
+```
 
 
 #### Resposta:
 
-```json
-{
-  "database": "ID encontrado na database: airbnb2",
-  "resultado": {
-    "_id": "11945972",
-    ...
-  }
-}
-```
-
-#### Caso o ID não seja fornecido:
 
 ```json
 {
-  "error": "ID nao fornecido"
+    "_id":"11945972",
+    "etc":"etc"
 }
-```
-
-#### Caso o ID não seja encontrado:
-
-```json
-{
-  "error": "ID nao encontrado"
-}
-```
-
-## Arquivo de configuração
-
-- Certifique-se de que os servidores estejam configurados corretamente no arquivo vizinhos.json.
-- Deve estar dentro de colchetes, pois o nosso algoritmo de busca acessa a posição na variável servidores.
-
-#### Exemplo:
-
-```json
-[
-  {
-    "id": "server1",
-    "port": 5000,
-    "mongo_uri": "mongodb://localhost:27017",
-    "database": "airbnb1",
-    "neighbors": [
-      {
-        "id": "server2",
-        "port": 5001,
-        "mongo_uri": "mongodb://localhost:27017",
-        "database": "airbnb2"
-      },
-      {
-        "id": "server3",
-        "port": 5002,
-        "mongo_uri": "mongodb://localhost:27017",
-        "database": "airbnb3"
-      }
-    ]
-  }
-]
 ```
